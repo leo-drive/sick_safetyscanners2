@@ -1,0 +1,35 @@
+# ROS 2 build artifacts
+build/
+install/
+log/
+
+# Colcon
+colcon_install_layout.*
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# CMake
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# Visual Studio Code settings (optional)
+.vscode/
+
+# CLion / JetBrains IDEs
+.idea/
+
+# ROS 2 local setup files (optional, if generated in workspace)
+local_setup.*
+
+# Other editor swap/temp files
+*.swp
+*.swo
+*~
+
+# ROS 2 test logs
+test_results/

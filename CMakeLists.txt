@@ -25,46 +25,39 @@ find_package(lifecycle_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(sick_safetyscanners_base REQUIRED)
 find_package(sick_safetyscanners2_interfaces REQUIRED)
+find_package(rclcpp_components REQUIRED)
 
 set(dependencies
         diagnostic_updater
         rclcpp
         rclcpp_lifecycle
+        rclcpp_components
         lifecycle_msgs
         sensor_msgs
         sick_safetyscanners_base
         sick_safetyscanners2_interfaces
 )
 
-add_executable(sick_safetyscanners2_node
+add_library(sick_ros2_component SHARED 
         src/sick_safetyscanners2_node.cpp
-        src/SickSafetyscanners.cpp
         src/SickSafetyscannersRos2.cpp
-        src/utils/MessageCreator.cpp)
-
-target_link_libraries(sick_safetyscanners2_node
-        sick_safetyscanners_base::sick_safetyscanners_base
-        ${Boost_LIBRARIES})
-
-ament_target_dependencies(sick_safetyscanners2_node ${dependencies})
-
-target_include_directories(sick_safetyscanners2_node PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        $<INSTALL_INTERFACE:include>)
-
-add_executable(sick_safetyscanners2_lifecycle_node
-        src/sick_safetyscanners2_lifecycle_node.cpp
         src/SickSafetyscanners.cpp
-        src/SickSafetyscannersLifeCycle.cpp
         src/utils/MessageCreator.cpp)
 
-target_link_libraries(sick_safetyscanners2_lifecycle_node
+rclcpp_components_register_node(
+        sick_ros2_component
+        PLUGIN "sick::SickSafetyscannersRos2"
+        EXECUTABLE "sick_safetyscanners2_node"
+)
+
+target_link_libraries(sick_ros2_component
         sick_safetyscanners_base::sick_safetyscanners_base
         ${Boost_LIBRARIES})
 
-ament_target_dependencies(sick_safetyscanners2_lifecycle_node ${dependencies})
+ament_target_dependencies(sick_ros2_component ${dependencies}
+)
 
-target_include_directories(sick_safetyscanners2_lifecycle_node PUBLIC
+target_include_directories(sick_ros2_component PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>)
 
@@ -74,10 +67,6 @@ install(DIRECTORY
 )
 
 install(TARGETS sick_safetyscanners2_node
-        EXPORT export_${PROJECT_NAME}
-        DESTINATION lib/${PROJECT_NAME})
-
-install(TARGETS sick_safetyscanners2_lifecycle_node
         EXPORT export_${PROJECT_NAME}
         DESTINATION lib/${PROJECT_NAME})
 
@@ -95,5 +84,14 @@ endif ()
 #TODO lookup what this does
 # For message creation,if used in this message
 ament_export_dependencies(${dependencies})
+
+
+install(TARGETS sick_ros2_component
+        EXPORT export_sick_ros2_component
+        ARCHIVE DESTINATION lib
+        LIBRARY DESTINATION lib
+        RUNTIME DESTINATION bin
+)
+ament_export_targets(export_sick_ros2_component)
 
 ament_package()

@@ -36,8 +36,8 @@
 
 namespace sick {
 
-SickSafetyscannersRos2::SickSafetyscannersRos2()
-    : Node("SickSafetyscannersRos2") {
+SickSafetyscannersRos2::SickSafetyscannersRos2(const rclcpp::NodeOptions & options)
+    : Node("SickSafetyscannersRos2", options) {
   RCLCPP_INFO(this->get_logger(), "Initializing SickSafetyscannersRos2 Node");
 
   // read parameters!

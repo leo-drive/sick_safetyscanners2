@@ -40,12 +40,5 @@
 
 #include <cstdio>
 
-int main(int argc, char **argv) {
-  (void)argc;
-  (void)argv;
-
-  rclcpp::init(argc, argv);
-  rclcpp::spin(std::make_shared<sick::SickSafetyscannersRos2>());
-  rclcpp::shutdown();
-  return 0;
-}
+#include "rclcpp_components/register_node_macro.hpp"
+RCLCPP_COMPONENTS_REGISTER_NODE(sick::SickSafetyscannersRos2)
