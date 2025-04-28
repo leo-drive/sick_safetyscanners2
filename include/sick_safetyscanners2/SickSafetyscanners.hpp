@@ -79,6 +79,8 @@ public:
     double m_timestamp_min_acceptable = -1.0;
     double m_timestamp_max_acceptable = 1.0;
     double m_min_intensities = 0.0; /*!< min intensities for laser points */
+    std::string m_pointcloud_topic_name;
+    std::string m_pointcloud_frame_id;
     bool m_use_sick_angles;
     float m_angle_offset = -90.0;
     bool m_use_pers_conf = false;
@@ -124,6 +126,8 @@ public:
     node.template declare_parameter<bool>("application_io_data", true);
     node.template declare_parameter<bool>("use_persistent_config", false);
     node.template declare_parameter<float>("min_intensities", 0.f);
+    node.template declare_parameter<std::string>("pointcloud_topic_name", "/sick_pointcloud");
+    node.template declare_parameter<std::string>("pointcloud_frame_id","pointcloud2");
 
     node.template declare_parameter<double>("expected_frequency", 34);
     node.template declare_parameter<double>("frequency_tolerance", 0.1);
@@ -247,6 +251,14 @@ public:
     node.template get_parameter<double>("min_intensities",
                                         m_config.m_min_intensities);
     RCLCPP_INFO(getLogger(), "min_intensities: %f", m_config.m_min_intensities);
+
+    node.template get_parameter<std::string>("pointcloud_topic_name",
+                                        m_config.m_pointcloud_topic_name);
+    RCLCPP_INFO(getLogger(), "pointcloud_topic_name: %s", m_config.m_pointcloud_topic_name.c_str());
+
+    node.template get_parameter<std::string>("pointcloud_frame_id",
+                                        m_config.m_pointcloud_frame_id);
+    RCLCPP_INFO(getLogger(), "pointcloud_frame_id: %s", m_config.m_pointcloud_frame_id.c_str());
 
     node.template get_parameter<double>("expected_frequency",
                                         m_config.m_expected_frequency);

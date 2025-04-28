@@ -61,6 +61,9 @@ SickSafetyscannersRos2::SickSafetyscannersRos2(const rclcpp::NodeOptions & optio
           "field_data",
           std::bind(&SickSafetyscannersRos2::getFieldData, this,
                     std::placeholders::_1, std::placeholders::_2));
+  
+  m_pointcloud_publisher =
+      this->create_publisher<sensor_msgs::msg::PointCloud2>(m_config.m_pointcloud_topic_name.c_str(),1);
 
   // Dynamic Parameter Change client
   m_param_callback = add_on_set_parameters_callback(
@@ -87,6 +90,9 @@ void SickSafetyscannersRos2::receiveUDPPaket(
       !data.getDerivedValuesPtr()->isEmpty()) {
     auto scan = m_config.m_msg_creator->createLaserScanMsg(data, this->now());
     m_diagnosed_laser_scan_publisher->publish(scan);
+    sensor_msgs::msg::LaserScan::ConstPtr scan_ptr = std::make_shared<sensor_msgs::msg::LaserScan>(scan);
+    scanCallback(scan_ptr);
+    m_pointcloud_publisher->publish(m_pointcloud_msg);
 
     sick_safetyscanners2_interfaces::msg::ExtendedLaserScan extended_scan =
         m_config.m_msg_creator->createExtendedLaserScanMsg(data, this->now());
@@ -99,5 +105,10 @@ void SickSafetyscannersRos2::receiveUDPPaket(
 
   m_last_raw_msg = m_config.m_msg_creator->createRawDataMsg(data);
   m_raw_data_publisher->publish(m_last_raw_msg);
+}
+
+void SickSafetyscannersRos2::scanCallback(const sensor_msgs::msg::LaserScan::ConstPtr& scan_in){
+  projector_.projectLaser(*scan_in, m_pointcloud_msg);
+  m_pointcloud_msg.header.frame_id = m_config.m_pointcloud_frame_id;
 }
 } // namespace sick

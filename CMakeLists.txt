@@ -26,6 +26,7 @@ find_package(sensor_msgs REQUIRED)
 find_package(sick_safetyscanners_base REQUIRED)
 find_package(sick_safetyscanners2_interfaces REQUIRED)
 find_package(rclcpp_components REQUIRED)
+find_package(laser_geometry REQUIRED)
 
 set(dependencies
         diagnostic_updater
@@ -36,6 +37,7 @@ set(dependencies
         sensor_msgs
         sick_safetyscanners_base
         sick_safetyscanners2_interfaces
+        laser_geometry
 )
 
 add_library(sick_ros2_component SHARED 

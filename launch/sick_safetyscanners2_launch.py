@@ -35,7 +35,9 @@ def generate_launch_description():
                     "intrusion_data": True,
                     "application_io_data": True,
                     "use_persistent_config": False,
-                    "min_intensities": 0.0}
+                    "min_intensities": 0.0,
+                    "pointcloud_topic_name": "/pointcloud",
+                    "pointcloud_frame_id": "scan"}
                 ]
             )
         ],

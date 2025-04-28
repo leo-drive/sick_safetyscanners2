@@ -48,6 +48,9 @@
 
 #include <rclcpp/rclcpp.hpp>
 #include <sensor_msgs/msg/laser_scan.hpp>
+#include <sensor_msgs/msg/point_cloud2.hpp>
+
+#include <laser_geometry/laser_geometry.hpp>
 
 #include <string>
 
@@ -73,6 +76,8 @@ private:
       SharedPtr m_output_paths_publisher;
   rclcpp::Publisher<sick_safetyscanners2_interfaces::msg::RawMicroScanData>::
       SharedPtr m_raw_data_publisher;
+  rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::
+      SharedPtr m_pointcloud_publisher;
 
   // Services
   rclcpp::Service<sick_safetyscanners2_interfaces::srv::FieldData>::SharedPtr
@@ -80,6 +85,10 @@ private:
 
   // Callback function passed to the device for handling the received packages
   void receiveUDPPaket(const sick::datastructure::Data &data);
+  void scanCallback(const sensor_msgs::msg::LaserScan::ConstPtr& scan_in);
+
+  laser_geometry::LaserProjection projector_;
+  sensor_msgs::msg::PointCloud2 m_pointcloud_msg;
 };
 } // namespace sick
 
